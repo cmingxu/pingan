@@ -1,0 +1,7 @@
+%p#notice= notice
+%p
+  %strong Ip:
+  = @login.ip
+= link_to 'Edit', edit_login_path(@login)
+|
+= link_to 'Back', logins_path

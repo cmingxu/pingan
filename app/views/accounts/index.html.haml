@@ -1,0 +1,30 @@
+= link_to '更新代理', renew_proxies_accounts_path , class: 'btn btn-flag btn-danger pull-right', data: { confirm: "确定" }, method: :post, remote: true
+= link_to '新增诊所', new_account_path, class: 'btn btn-flag pull-right btn-primary'
+
+%table.table.table-bordered
+  %thead
+    %tr
+      %th 用户名
+      %th 密码
+      %th 代理
+      %th 登录
+      %th 就诊
+      %th
+  %tbody
+    - @accounts.each do |account|
+      %tr
+        %td= account.username
+        %td= account.password
+        %td= account.proxy
+        %td
+          = account.logins.today.count
+          \/
+          = account.logins.count
+        %td
+          = account.proxy
+        %td
+          = link_to '显示', edit_account_path(account)
+          = link_to '删除', account, method: :delete, data: { confirm: 'Are you sure?' }
+
+
+= paginate @accounts

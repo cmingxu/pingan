@@ -1,0 +1,10 @@
+%p#notice= notice
+%p
+  %strong Username:
+  = @account.username
+%p
+  %strong Password:
+  = @account.password
+= link_to 'Edit', edit_account_path(@account)
+|
+= link_to 'Back', accounts_path

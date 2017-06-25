@@ -1,0 +1,26 @@
+= link_to 'New Patient', new_patient_path, class: 'btn btn-flat btn-default pull-right'
+
+%table.table
+  %thead
+    %tr
+      %th Account
+      %th Name
+      %th Phone
+      %th Age
+      %th Month
+      %th Gender
+      %th
+      %th
+      %th
+
+  %tbody
+    - @patients.each do |patient|
+      %tr
+        %td= patient.account_id
+        %td= patient.name
+        %td= patient.phone
+        %td= patient.age
+        %td= patient.month
+        %td= patient.gender
+        %td= link_to 'Edit', edit_patient_path(patient)
+        %td= link_to 'Destroy', patient, :method => :delete, :data => { :confirm => 'Are you sure?' }

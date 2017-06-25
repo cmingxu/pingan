@@ -1,0 +1,9 @@
+= simple_form_for @patient do |f|
+  = f.input :account_id
+  = f.input :name
+  = f.input :phone
+  = f.input :age
+  = f.input :month
+  = f.input :gender
+  .actions
+    = f.submit 'Save', class: 'btn btn-flat btn-danger'

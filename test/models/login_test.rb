@@ -6,6 +6,9 @@
 #  ip         :string
 #  account_id :integer
 #  status     :string
+#  login_at   :datetime
+#  exception  :text
+#  proxy      :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #

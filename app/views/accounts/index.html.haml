@@ -15,16 +15,26 @@
       %tr
         %td= account.username
         %td= account.password
-        %td= account.proxy
         %td
-          = account.logins.today.count
+          = account.proxy
+          \/
+          = time_ago_in_words account.proxy_renew_at
+        %td
+          = account.logins.today.done.count
+          \/
+          = account.logins.done.count
           \/
           = account.logins.count
         %td
-          = account.proxy
+          %strong= account.proxy
+          %br
+          = account.logins.last.exception
         %td
+          = link_to '换代理', renew_proxy_account_path(account), method: :post, data: { confirm: "renew?" }, remote: true
+          = link_to '登录', login_account_path(account), method: :post, data: { confirm: "login?" }, remote: true
           = link_to '显示', edit_account_path(account)
           = link_to '删除', account, method: :delete, data: { confirm: 'Are you sure?' }
+
 
 
 = paginate @accounts

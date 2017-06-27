@@ -1,5 +1,5 @@
 class AccountsController < ApplicationController
-  before_action :set_account, only: [:show, :edit, :update, :destroy, :login]
+  before_action :set_account, only: [:show, :edit, :update, :destroy, :login, :renew_proxy]
 
   # GET /accounts
   # GET /accounts.json
@@ -9,6 +9,11 @@ class AccountsController < ApplicationController
 
   def renew_proxies
     Account.test_or_renew_proxy
+    head :ok
+  end
+
+  def renew_proxy
+    @account.new_proxy #if !@account.proxy_ok?
     head :ok
   end
 

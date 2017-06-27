@@ -9,6 +9,7 @@
 #  age        :integer
 #  month      :integer
 #  gender     :string
+#  entroll_at :datetime
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #

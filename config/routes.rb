@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
     member do
       post :login
+      post :renew_proxy
     end
   end
   resources :patients

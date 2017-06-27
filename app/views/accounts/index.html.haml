@@ -1,4 +1,5 @@
 = link_to '更新代理', renew_proxies_accounts_path , class: 'btn btn-flag btn-danger pull-right', data: { confirm: "确定" }, method: :post, remote: true
+= link_to '全部登录', login_all_account_accounts_path , class: 'btn btn-flag btn-success pull-right', data: { confirm: "确定" }, method: :post, remote: true
 = link_to '新增诊所', new_account_path, class: 'btn btn-flag pull-right btn-primary'
 
 %table.table.table-bordered
@@ -18,7 +19,8 @@
         %td
           = account.proxy
           \/
-          = time_ago_in_words account.proxy_renew_at
+          - if account.proxy_renew_at
+            = time_ago_in_words account.proxy_renew_at
         %td
           = account.logins.today.done.count
           \/
@@ -28,7 +30,8 @@
         %td
           %strong= account.proxy
           %br
-          = account.logins.last.exception
+          - if account.logins.present?
+            = account.logins.last.exception
         %td
           = link_to '换代理', renew_proxy_account_path(account), method: :post, data: { confirm: "renew?" }, remote: true
           = link_to '登录', login_account_path(account), method: :post, data: { confirm: "login?" }, remote: true

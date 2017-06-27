@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :accounts do
     collection do
       post :renew_proxies
+      post :login_all_account
     end
 
     member do

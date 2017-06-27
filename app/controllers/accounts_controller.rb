@@ -17,6 +17,11 @@ class AccountsController < ApplicationController
     head :ok
   end
 
+  def login_all_account
+    Account.all.map &:login
+    head :ok
+  end
+
   def login
     @account.login
     head :ok

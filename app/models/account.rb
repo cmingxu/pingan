@@ -18,7 +18,13 @@ class Account < ApplicationRecord
   CLINIC_PAGE = "https://myclinic.pinganwj.com/"
   CHROME_SWITCHES = %w(--ignore-certificate-errors --disable-popup-blocking --disable-translate)
 
-  TEST_SITE = "https://www.baidu.com/"
+  TEST_SITE = "http://baidu.com/"
+
+  before_validation on: :create do
+    self.password = "Wanjia4657"
+  end
+
+  validates :username, :password, presence: true
 
   has_many :logins
 
@@ -27,10 +33,9 @@ class Account < ApplicationRecord
   end
 
   def login
-    login = self.logins.build
-    login.proxy = self.proxy
-    login.status = "new"
+    login = self.logins.build proxy: self.proxy, status: :new
     login.save
+
     begin
       switches = CHROME_SWITCHES.clone
       switches.push("--proxy-server=#{self.proxy}")
@@ -38,7 +43,7 @@ class Account < ApplicationRecord
       browser.driver.manage.timeouts.implicit_wait = 10
 
       browser.goto LOGIN_PAGE
-      puts browser.title
+      Rails.logger.debug browser.title
 
       toggleDiv = browser.div(class: 'tab js_exchange_login_meth')
       toggleDiv.click
@@ -54,11 +59,14 @@ class Account < ApplicationRecord
       puts submitLink.exists?
       submitLink.click
 
+      login.status = "done"
+      login.login_at = Time.now
+      login.save
+
+      puts browser.title
+
       #browser.goto CLINIC_PAGE
-
-
       #browser.li(id: "patient_management").click
-
       #browser.iframe(:index => 0).text_field(id: "patiName").set("foobar")
       #browser.iframe(:index => 0).text_field(id: "phone").set("foobar")
 
@@ -71,17 +79,12 @@ class Account < ApplicationRecord
       return
     end
 
-    login.status = "done"
-    login.login_at = Time.now
-    login.save
   end
 
   def self.test_or_renew_proxy
     Account.find_each do |account|
-      next if account.proxy_ok?
-
-      account.new_proxy
-      sleep 5
+      account.new_proxy if !account.proxy_ok?
+      sleep 5 # kuaidaili need interval 5s
     end
   end
 
@@ -100,28 +103,26 @@ class Account < ApplicationRecord
     #resp = self.class.get("http://httpbin.org/ip", opts)
     begin
       resp = self.class.get(TEST_SITE, opts)
+      puts "testing got #{resp}"
+      self.update_column :proxy_last_ok_at, Time.now
+      true
     rescue Exception => e
       puts "#{opts[:http_proxyaddr]}:#{opts[:http_proxyport]}  #{TEST_SITE} got exception"
       puts e
       return false
     end
-
-    puts "testing got #{resp}"
-    self.update_column :proxy_last_ok_at, Time.now
-    resp.code.to_i == 200
   end
 
   def new_proxy
-    proxies_api = "http://dev.kuaidaili.com/api/getproxy/?orderid=959836867801697&num=10&b_pcchrome=1&b_pcie=1&b_pcff=1&protocol=2&method=1&an_an=1&an_ha=1&sep=1"
+    proxies_api = "http://dev.kuaidaili.com/api/getproxy/?orderid=959836867801697&num=20&b_pcchrome=1&b_pcie=1&b_pcff=1&protocol=2&method=1&an_an=1&an_ha=1&sep=1"
     resp = HTTParty.get proxies_api
     new_proxies = resp.body.split("\n")
     new_proxies.each do |p|
       puts "test proxy #{p}"
-      next if p == self.proxy
       self.proxy = p
-      self.proxy_renew_at = Time.now
       if self.proxy_ok?
         puts "good proxy #{self.proxy}"
+        self.proxy_renew_at = Time.now
         self.save
         break
       end

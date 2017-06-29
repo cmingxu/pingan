@@ -18,7 +18,7 @@ class Account < ApplicationRecord
   CLINIC_PAGE = "https://myclinic.pinganwj.com/"
   CHROME_SWITCHES = %w(--ignore-certificate-errors --disable-popup-blocking --disable-translate)
 
-  TEST_SITE = "http://baidu.com/"
+  TEST_SITE = "https://www.baidu.com/"
 
   before_validation on: :create do
     self.password = "Wanjia4657"
@@ -40,7 +40,7 @@ class Account < ApplicationRecord
       switches = CHROME_SWITCHES.clone
       switches.push("--proxy-server=#{self.proxy}")
       browser = Watir::Browser.new :chrome, switches: switches
-      browser.driver.manage.timeouts.implicit_wait = 10
+      #browser.driver.manage.timeouts.implicit_wait = 10
 
       browser.goto LOGIN_PAGE
       Rails.logger.debug browser.title
@@ -114,7 +114,7 @@ class Account < ApplicationRecord
   end
 
   def new_proxy
-    proxies_api = "http://dev.kuaidaili.com/api/getproxy/?orderid=959836867801697&num=20&b_pcchrome=1&b_pcie=1&b_pcff=1&protocol=2&method=1&an_an=1&an_ha=1&sep=1"
+    proxies_api = "http://dev.kuaidaili.com/api/getproxy/?orderid=959836867801697&num=90&b_pcchrome=1&b_pcie=1&b_pcff=1&protocol=2&method=1&an_an=1&an_ha=1&sep=1"
     resp = HTTParty.get proxies_api
     new_proxies = resp.body.split("\n")
     new_proxies.each do |p|

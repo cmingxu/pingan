@@ -21,6 +21,9 @@
           \/
           - if account.proxy_renew_at
             = time_ago_in_words account.proxy_renew_at
+          \/
+          - if account.proxy_last_ok_at
+            = time_ago_in_words account.proxy_last_ok_at
         %td
           = account.logins.today.done.count
           \/
